@@ -7,11 +7,13 @@
           :items="meals_temp"
           :items-per-page="3"
           class="elevation-1"
-          @click:row="handleClick"
         >
-          <template v-slot:[`item.id`]="{item}">
-            <router-link :to="{ title: 'company', params: { id: item.id } }">
-              {{ item.title }}
+          <!-- <template v-slot:[`item.id`]="{item}"> -->
+            <template v-slot:[`item.counter`]="{item}">
+            <!-- <router-link :to="'/Carrousel/' + item.counter"> -->
+            <router-link :to="{ path: 'Carrousel', query: { meal: item.counter - 1 }}">
+            <!-- <router-link :to="`/Carrousel/`"> -->
+              Posiłek: {{ item.counter }}
             </router-link>
           </template>
         </v-data-table>
@@ -68,12 +70,13 @@ export default {
       for (var day = 1; day <= this.days; day++) {
         this.meals.push(response.data.filter((data) => data.day === day));
       }
-
+      
       for (var day = 1; day <= this.days; day++) {
         this.headers.push({
           text: "Dzień ".concat(day),
           value: "title".concat(day),
         });
+        // console.log(this.headers);
         const meals_temp1 = this.meals[day - 1].map((item) => {
           const container = {};
 
@@ -88,11 +91,14 @@ export default {
           for (var counter = 0; counter <= mealsLength - 1; counter++)
             this.meals_temp[counter]["title".concat(day)] =
               meals_temp1[counter]["title".concat(day)];
+        
       }
       // console.log(this.meals_temp[0]);
+      
       for (var i = 1; i <= 3; i++) {
         this.show[i] = false;
       }
+      
     },
   },
 };

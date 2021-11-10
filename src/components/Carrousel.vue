@@ -16,6 +16,7 @@
             align-center
           "
         >
+        {{model}}
           <v-carousel v-model="model" height="auto">
             <v-carousel-item v-for="day in days" v-bind:key="day">
               <v-row class="fill-height" align="center" justify="center">
@@ -83,26 +84,33 @@ export default {
     axios.get("https://diet-backend-poland.herokuapp.com/meals/").then((response) => {
       if (response.status == 200) {
         this.fillData(response);
-        console.log(response.data);
+        // console.log(response.data);
       } else {
         console.log("brak danych");
       }
     });
   },
-
   data: () => ({
     meals: [],
     show: [],
-    model: 0,
     days: 0,
   }),
+   created () {
+    this.fetchData()
+  },
+  watch: {
+    model: 'fetchData'
+  },
   methods: {
+    fetchData(){
+          this.model = this.$route.query.meal;
+      },
     fillData(response) {
       this.days = Math.max.apply(
         Math,
         response.data.map((data) => data.day)
-      );
-
+      );     
+      console.log(this.model);
       for (var i = 1; i <= this.days; i++) {
         this.meals.push(response.data.filter((data) => data.day === i));
       }
