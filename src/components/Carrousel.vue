@@ -16,16 +16,17 @@
             align-center
           "
         >
-        {{model}}
-          <v-carousel v-model="model" height="auto">
+          {{ model }}
+          <v-carousel 
+          v-model="model"
+          height="auto" 
+          show-arrows-on-hover>
+            
             <v-carousel-item v-for="day in days" v-bind:key="day">
               <v-row class="fill-height" align="center" justify="center">
                 <v-card class="justify-center" max-width="600">
                   <v-card-title>Dzień {{ day }}</v-card-title>
-                  <div
-                    v-for="meal in meals[day - 1]"
-                    v-bind:key="meal.counter"
-                  >
+                  <div v-for="meal in meals[day - 1]" v-bind:key="meal.counter">
                     <v-card-actions>
                       <v-card-text>
                         <div id="app">
@@ -46,22 +47,22 @@
                     <div v-show="show[meal.id]">
                       <v-divider></v-divider>
                       <v-card-text>
-                        <div class = "mealDescripion">
-                        <li
-                          v-for="ingredient in meal.igredientmeals"
-                          v-bind:key="ingredient.id"
-                        >
-                          {{ ingredient.quantity }}
-                          {{ ingredient.unit.name }}
-                          {{ ingredient.ingredient.name }}
-                        </li>
-                        <li
-                          v-for="ingredient in meal.spice"
-                          v-bind:key="ingredient.id"
-                        >
-                          {{ ingredient.name }}
-                        </li>
-                        {{ meal.description }}
+                        <div class="mealDescripion">
+                          <li
+                            v-for="ingredient in meal.igredientmeals"
+                            v-bind:key="ingredient.id"
+                          >
+                            {{ ingredient.quantity }}
+                            {{ ingredient.unit.name }}
+                            {{ ingredient.ingredient.name }}
+                          </li>
+                          <li
+                            v-for="ingredient in meal.spice"
+                            v-bind:key="ingredient.id"
+                          >
+                            {{ ingredient.name }}
+                          </li>
+                          {{ meal.description }}
                         </div>
                       </v-card-text>
                     </div>
@@ -81,35 +82,66 @@
 import axios from "axios";
 export default {
   mounted() {
-    axios.get("https://diet-backend-poland.herokuapp.com/meals/").then((response) => {
-      if (response.status == 200) {
-        this.fillData(response);
-        // console.log(response.data);
-      } else {
-        console.log("brak danych");
-      }
-    });
+    axios
+      .get("https://diet-backend-poland.herokuapp.com/meals/")
+      .then((response) => {
+        if (response.status == 200) {
+          this.fillData(response);
+          // console.log(response.data);
+        } else {
+          console.log("brak danych");
+        }
+      });
   },
   data: () => ({
     meals: [],
     show: [],
     days: 0,
+    // model: 0
   }),
-   created () {
-    this.fetchData()
+  
+  created() {
+    this.fetchData();
   },
-  watch: {
-    model: 'fetchData'
-  },
+  // watch: {
+    
+    // model: fetchData(){
+    //   console.log('date changed');
+    // }
+    // model: {
+    //   handler:'fetchData',
+    //   immediate: true
+    // }
+    // model(v){
+    //          this.$emit('input', v);
+    //      }
+    // console.log('date changed')
+    // '$route' (to,from){
+    //     this.model = this.$route.query.meal;
+    // }
+  // },
+  // computed: {
+  //           model: {
+  //               // set(val) {
+  //               //     let query = {...this.$route.query};
+  //               //     query.tab = val;
+  //               //     this.$router.replace({query: query});
+  //               // },
+  //               get() {
+  //                   return (this.$route.query.meal);
+  //               }
+  //           }
+  //       },
   methods: {
-    fetchData(){
-          this.model = this.$route.query.meal;
-      },
+    fetchData() {
+      const i = parseInt(this.$route.query.meal);
+      this.model = i;
+    },
     fillData(response) {
       this.days = Math.max.apply(
         Math,
         response.data.map((data) => data.day)
-      );     
+      );
       console.log(this.model);
       for (var i = 1; i <= this.days; i++) {
         this.meals.push(response.data.filter((data) => data.day === i));
