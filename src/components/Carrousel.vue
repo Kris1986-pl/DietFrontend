@@ -16,7 +16,6 @@
             align-center
           "
         >
-          {{ model }}
           <v-carousel 
           v-model="model"
           height="auto" 
@@ -87,7 +86,6 @@ export default {
       .then((response) => {
         if (response.status == 200) {
           this.fillData(response);
-          // console.log(response.data);
         } else {
           console.log("brak danych");
         }
@@ -97,52 +95,23 @@ export default {
     meals: [],
     show: [],
     days: 0,
-    // model: 0
   }),
   
   created() {
     this.fetchData();
   },
-  // watch: {
+  watch: {
     
-    // model: fetchData(){
-    //   console.log('date changed');
-    // }
-    // model: {
-    //   handler:'fetchData',
-    //   immediate: true
-    // }
-    // model(v){
-    //          this.$emit('input', v);
-    //      }
-    // console.log('date changed')
-    // '$route' (to,from){
-    //     this.model = this.$route.query.meal;
-    // }
-  // },
-  // computed: {
-  //           model: {
-  //               // set(val) {
-  //               //     let query = {...this.$route.query};
-  //               //     query.tab = val;
-  //               //     this.$router.replace({query: query});
-  //               // },
-  //               get() {
-  //                   return (this.$route.query.meal);
-  //               }
-  //           }
-  //       },
+  },
   methods: {
     fetchData() {
-      const i = parseInt(this.$route.query.meal);
-      this.model = i;
+      this.model = parseInt(this.$route.query.meal);
     },
     fillData(response) {
       this.days = Math.max.apply(
         Math,
         response.data.map((data) => data.day)
       );
-      console.log(this.model);
       for (var i = 1; i <= this.days; i++) {
         this.meals.push(response.data.filter((data) => data.day === i));
       }
